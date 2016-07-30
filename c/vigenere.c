@@ -56,6 +56,5 @@ int v_key(char c, int decrypt)
 		return 26 - (c - 97);
 	}
 	else
-		//printf("%d ", c - 97);
 		return c - 97;
 }
