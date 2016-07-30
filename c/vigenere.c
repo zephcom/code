@@ -6,25 +6,28 @@
 #define MESSAGE_MAX_LENGTH		4096
 
 char caesar(int key, char c);
-int v_key(char c);
+int v_key(char c, int decrypt);
 
 int main(int argc, char *argv[])
 {
-	if (argc != 2) //Only accept one argument, else print help message
+	if (argc > 3 || argc < 2) //Only accept one or two arguments, '-d' for decrypt should not come last
 	{
-		printf("Usage: %s [KEY]\n\tKEY is an alphabetical phrase.\n\tEncrypts stdin using a vigenere cipher.\n", argv[0]);
+		printf("Usage: %s [-d decrypt] KEY\n\tKEY is an alphabetical phrase.\n\tEncrypts stdin using a vigenere cipher.\n", argv[0]);
 		return 1;
 	}
-	char *key_in = argv[1];
+	char *key_in = argv[argc - 1]; //Take the last command line argument as key
 	char intext[MESSAGE_MAX_LENGTH];
-	fgets(intext, MESSAGE_MAX_LENGTH, stdin); 
+	fgets(intext, MESSAGE_MAX_LENGTH, stdin);
 	for (int i = 0, n = 0; i < strlen(intext); i++, n++)
 	{
-		if (n == strlen(argv[1]))
+		if (n == strlen(argv[argc - 1]))
 			n = 0;
 		if (isalnum(intext[i]) == 0)
 			--n;
-		printf("%c", caesar(v_key(argv[1][n]), intext[i]));
+		if (!strcmp(argv[1], "-d"))
+			printf("%c", caesar(v_key(argv[argc - 1][n], 1), intext[i]));
+		else
+			printf("%c", caesar(v_key(argv[argc - 1][n], 0), intext[i]));
 	}
 }
 
@@ -44,12 +47,15 @@ char caesar(int key, char c)
 }
 
 /* Turn alphabetical characters to numbers 0 - 25 for use as key */
-int v_key(char c)
+int v_key(char c, int decrypt)
 {
 	if (isupper(c))
 		c = tolower(c);
-	if (islower(c))
-		return c - 97;
+	if (decrypt == 1)
+	{
+		return 26 - (c - 97);
+	}
 	else
-		return 0;;
+		//printf("%d ", c - 97);
+		return c - 97;
 }
