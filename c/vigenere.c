@@ -52,9 +52,7 @@ int v_key(char c, int decrypt)
 	if (isupper(c))
 		c = tolower(c);
 	if (decrypt == 1)
-	{
 		return 26 - (c - 97);
-	}
 	else
 		return c - 97;
 }
